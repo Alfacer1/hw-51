@@ -1,26 +1,22 @@
-// src/App.jsx
 import React, { useState, useCallback} from 'react';
 import { INITIAL_ITEMS } from './data';
 import { MemoizedList } from './components/MemoizedList';
 import { ControlPanel } from './components/ControlPanel';
 
-// 📚 Обов'язкові Бібліотеки
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Стилі для Toastify
+import 'react-toastify/dist/ReactToastify.css';
 import { IdleTimerProvider, useIdleTimer } from 'react-idle-timer';
-import { FaPlus, FaPalette } from 'react-icons/fa'; // React Icons
+import { FaPlus, FaPalette } from 'react-icons/fa';
 
-// 📚 Додаткові Бібліотеки
-import { HexColorPicker } from "react-colorful"; // Для демонстрації
+import { HexColorPicker } from "react-colorful";
 
 function App() {
   const [items, setItems] = useState(INITIAL_ITEMS);
   const [filter, setFilter] = useState('');
   const [counter, setCounter] = useState(0); 
-  const [isIdle, setIsIdle] = useState(false); // Стан для IdleTimer
-  const [color, setColor] = useState("#aabbcc"); // Стан для ColorPicker
+  const [isIdle, setIsIdle] = useState(false);
+  const [color, setColor] = useState("#aabbcc");
 
-  // --- ЛОГІКА IDLE TIMER ---
   const handleOnIdle = () => {
     setIsIdle(true);
     toast.warn('Ви неактивні! (Idle Timer спрацював)', { autoClose: 3000 });
@@ -30,18 +26,15 @@ function App() {
     setIsIdle(false);
   };
   
-  // Ініціалізація IdleTimer (альтернативний спосіб, якщо не використовується провайдер)
   useIdleTimer({
     onIdle: handleOnIdle,
     onActive: handleOnActive,
-    timeout: 1000 * 10, // 10 секунд неактивності для тестування
+    timeout: 1000 * 10,
     throttle: 500,
     stopOnIdle: false,
     events: ['keydown', 'mousemove', 'mousedown', 'touchstart', 'scroll'],
   });
-  // --- КІНЕЦЬ ЛОГІКИ IDLE TIMER ---
 
-  // 3. Мемоізація колбек-функції (useCallback) - залишається
   const handleCounterIncrement = useCallback(() => {
     setCounter(c => c + 1);
   }, []); 
@@ -54,7 +47,6 @@ function App() {
     const newItem = { id: Date.now(), name: 'Новий товар (Toastify)', price: 999 };
     setItems(prevItems => [...prevItems, newItem]);
     
-    // 🔥 React Toastify: Сповіщення про додавання
     toast.success(`Товар "${newItem.name}" додано!`, {
         position: "top-right",
         autoClose: 2000,
@@ -69,12 +61,10 @@ function App() {
 
   return (
     <div style={{ fontFamily: 'Arial', padding: '20px' }}>
-      {/* 💥 Toastify Container */}
       <ToastContainer />
 
       <h1>React Project Доопрацювання</h1>
-      
-      {/* Індикатор неактивності */}
+
       <p style={{ fontWeight: 'bold', color: isIdle ? 'orange' : 'green' }}>
         Статус: {isIdle ? 'Неактивний' : 'Активний'}
       </p>
@@ -100,7 +90,6 @@ function App() {
       />
       
       <br />
-      {/* 🚀 React Icons: Використання іконки у кнопці */}
       <button onClick={updateItems} style={{ marginTop: '10px', padding: '10px' }}>
         <FaPlus style={{ marginRight: '5px' }} /> Додати Товар (Toastify)
       </button>
@@ -123,6 +112,4 @@ function App() {
   );
 }
 
-// Загортаємо App у IdleTimerProvider, якщо це потрібно для глобальної логіки, 
-// але useIdleTimer вже працює в компоненті. 
 export default App;
